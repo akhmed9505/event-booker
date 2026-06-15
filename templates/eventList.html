@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Список мероприятий</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { padding: 8px; border: 1px solid #ccc; }
+  th { background: #f2f2f2; }
+  a.button { text-decoration: none; padding: 5px 10px; background: #007BFF; color: white; border-radius: 3px; }
+</style>
+</head>
+<body>
+<h1>Мероприятия</h1>
+<a href="/events/new" class="button">Создать мероприятие</a>
+<table>
+  <tr>
+    <th>Название</th>
+    <th>Дата</th>
+    <th>Мест всего</th>
+    <th>Свободно</th>
+    <th>Действия</th>
+  </tr>
+  {{range .Events}}
+  <tr>
+    <td>{{.Name}}</td>
+    <td>{{.Date.Format "2006-01-02 15:04"}}</td>
+    <td>{{.TotalSeats}}</td>
+    <td>{{.AvailableSeats}}</td>
+    <td>
+  <a href="/events/{{.ID}}/view" class="button">Просмотр</a>
+  <a href="/events/{{.ID}}/book" class="button">Забронировать</a>
+</td>
+  </tr>
+  {{end}}
+</table>
+<a href="/profile" style="
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    z-index: 1000;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+">Профиль</a>
+</body>
+</html>

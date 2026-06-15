@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Брони мероприятия</title>
+<style>
+  body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: #f9fafb;
+    margin: 30px 20px;
+    display: flex;
+    justify-content: center;
+  }
+  .container {
+    width: 100%;
+    max-width: 720px;
+    background: white;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  }
+  h1 {
+    margin-bottom: 28px;
+    font-weight: 700;
+    font-size: 2rem;
+    text-align: center;
+    color: #222;
+  }
+  table {
+    width: 100%;
+    border-spacing: 0 12px;
+    border-collapse: separate;
+  }
+  th, td {
+    padding: 14px 18px;
+    text-align: left;
+    vertical-align: middle;
+  }
+  th {
+    background-color: #f2f4f7;
+    font-weight: 600;
+    color: #555;
+    font-size: 1rem;
+  }
+  tbody tr {
+    background-color: #fdfdfd;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+    border-radius: 10px;
+  }
+  tbody tr:hover {
+    background-color: #e9f2ff;
+    cursor: default;
+  }
+  button {
+    background-color: #007bff;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-weight: 600;
+    padding: 8px 14px;
+    margin-right: 8px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+  }
+  button:hover {
+    background-color: #0056b3;
+  }
+  form {
+    display: inline;
+  }
+  .no-bookings {
+    text-align: center;
+    font-style: italic;
+    color: #666;
+    font-size: 1.05rem;
+  }
+  a.back-link {
+    display: block;
+    margin-top: 30px;
+    text-align: center;
+    font-weight: 600;
+    color: #007bff;
+    text-decoration: none;
+    font-size: 1rem;
+  }
+  a.back-link:hover {
+    text-decoration: underline;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Брони мероприятия</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Пользователь</th>
+          <th>Статус</th>
+          <th>Создана</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{if not .Bookings}}
+        <tr>
+          <td colspan="4" class="no-bookings">Пока нет ни одной брони.</td>
+        </tr>
+        {{end}}
+        {{range .Bookings}}
+        <tr>
+          <td>{{.UserName}}</td>
+          <td>{{.Booking.Status}}</td>
+          <td>{{.Booking.CreatedAt.Format "2006-01-02 15:04"}}</td>
+          <td>
+            <form method="POST" action="/api/bookings/{{.Booking.ID}}/confirm">
+              <button type="submit">Подтвердить</button>
+            </form>
+            <form method="POST" action="/api/bookings/{{.Booking.ID}}/cancel">
+              <button type="submit">Отмена</button>
+            </form>
+          </td>
+        </tr>
+        {{end}}
+      </tbody>
+    </table>
+
+    <a href="/events" class="back-link">← Назад к событиям</a>
+    <script>
+document.querySelectorAll('form').forEach(form => {
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if (form.querySelector('button').textContent.trim() === 'Отмена') {
+      if (!confirm('Вы уверены, что хотите отменить бронь?')) return;
+    }
+
+    const res = await fetch(form.action, { method: 'POST' });
+    if (res.ok) {
+      alert('Операция выполнена успешно');
+      // Можно обновить таблицу или сделать location.reload()
+      location.reload();
+    } else {
+      const data = await res.json();
+      alert('Ошибка: ' + (data.error || 'неизвестная ошибка'));
+    }
+  });
+});
+</script>
+  </div>
+  <a href="/profile" style="
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    z-index: 1000;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+">Профиль</a>
+
+</body>
+</html>

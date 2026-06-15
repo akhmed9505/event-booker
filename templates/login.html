@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>WarehouseControl — Вход</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #f4f6f8;
+    margin: 0; padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  #auth-container {
+    background: white;
+    padding: 40px 50px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    width: 360px;
+    box-sizing: border-box;
+  }
+  h2 {
+    margin: 0 0 25px;
+    color: #34495e;
+    font-weight: 700;
+    text-align: center;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  label {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 8px;
+    font-size: 15px;
+  }
+  input {
+    padding: 10px 14px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: 1px solid #bdc3c7;
+    font-size: 16px;
+    outline-offset: 2px;
+    transition: border-color 0.3s ease;
+  }
+  input:focus {
+    border-color: #2980b9;
+    box-shadow: 0 0 8px rgba(41,128,185,0.6);
+  }
+  button {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #3498db;
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  button:hover {
+    background: #2980b9;
+    transform: scale(1.05);
+  }
+  button:active {
+    transform: scale(0.95);
+  }
+  .toggle-link {
+    margin-top: 15px;
+    color: #2980b9;
+    cursor: pointer;
+    user-select: none;
+    text-decoration: underline;
+    font-size: 14px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div id="auth-container">
+
+  <h2>Вход</h2>
+  <form id="form-login">
+    <label for="login-username">Имя пользователя:</label>
+    <input type="text" id="login-username" required />
+    <label for="login-password">Пароль:</label>
+    <input type="password" id="login-password" required />
+    <button type="submit">Войти</button>
+  </form>
+
+  <div class="toggle-link" id="show-register">Нет аккаунта? <a href="/register">Зарегистрироваться</a></div>
+
+</div>
+
+<script>
+  document.getElementById('form-login').onsubmit = async (e) => {
+    e.preventDefault();
+    const nickname = document.getElementById('login-username').value.trim();
+    const password = document.getElementById('login-password').value;
+    if (!nickname || !password) {
+      alert('Пожалуйста, заполните все поля для входа');
+      return;
+    }
+    try {
+      const res = await fetch('user/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nickname, password })
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        alert('Ошибка: ' + (data.error || data.message));
+        return;
+      }
+      const data = await res.json();
+      const token = data.token || data.AccessToken;
+ // Получаем токен из поля AccessToken
+      if (!token) {
+        alert('Токен не получен от сервера');
+        return;
+      }
+      localStorage.setItem('jwt_token', token);
+      window.location.href = '/events/new'; // Переход на главную страницу после логина
+    } catch (err) {
+      alert('Ошибка соединения с сервером');
+    }
+  };
+</script>
+
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Детали мероприятия</title>
+<style>
+  body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin: 40px 20px;
+    background: #f0f4f8;
+    display: flex;
+    justify-content: center;
+  }
+  .event-container {
+    background: white;
+    max-width: 520px;
+    padding: 36px 48px;
+    border-radius: 14px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    color: #212529;
+  }
+  h1 {
+    margin-bottom: 24px;
+    font-size: 2.3rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    text-align: center;
+    letter-spacing: 0.03em;
+  }
+  dl.details {
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+  dt {
+    font-weight: 700;
+    margin-top: 18px;
+    color: #333;
+  }
+  dd {
+    margin-left: 28px;
+    margin-bottom: 12px;
+    color: #555;
+  }
+  a.button {
+    display: inline-block;
+    margin-top: 30px;
+    margin-right: 14px;
+    padding: 14px 28px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  a.button:hover {
+    background-color: #0056b3;
+  }
+  a.secondary-button {
+    background-color: #6c757d;
+  }
+  a.secondary-button:hover {
+    background-color: #4e555b;
+  }
+  @media (max-width: 600px) {
+    .event-container {
+      padding: 24px 20px;
+      width: 100%;
+      margin: 0 10px;
+    }
+    h1 {
+      font-size: 1.8rem;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="event-container">
+    <h1>{{.Name}}</h1>
+    <dl class="details">
+      <dt>Дата и время:</dt>
+      <dd>{{.Date.Format "2006-01-02 15:04"}}</dd>
+
+      <dt>Мест всего:</dt>
+      <dd>{{.TotalSeats}}</dd>
+
+      <dt>Свободно:</dt>
+      <dd>{{.AvailableSeats}}</dd>
+
+      <dt>Требуется оплата:</dt>
+      <dd>{{if .RequiresPayment}}Да{{else}}Нет{{end}}</dd>
+
+      <dt>Email организатора:</dt>
+      <dd>{{if .Email}}{{.Email}}{{else}}—{{end}}</dd>
+    </dl>
+
+    <a href="/events/{{.ID}}/book" class="button">Забронировать место</a>
+    <a href="/events" class="button secondary-button">Назад к списку</a>
+  </div>
+  <a href="/profile" style="
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    z-index: 1000;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+">Профиль</a>
+</body>
+</html>

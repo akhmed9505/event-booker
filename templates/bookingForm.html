@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Бронирование места</title>
+<style>
+  body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: #f4f6f8;
+    margin: 40px 20px;
+    display: flex;
+    justify-content: center;
+  }
+  .container {
+    background: white;
+    max-width: 400px;
+    width: 100%;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
+  }
+  h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: #222;
+    text-align: center;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #444;
+  }
+  input[type="number"] {
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 2px solid #ccc;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    width: 100px;
+  }
+  input[type="number"]:focus {
+    outline: none;
+    border-color: #007bff;
+  }
+  button {
+    margin-top: 25px;
+    padding: 14px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #0056b3;
+  }
+  a.back-link {
+    display: block;
+    margin-top: 20px;
+    text-align: center;
+    font-weight: 600;
+    color: #007bff;
+    text-decoration: none;
+    font-size: 1rem;
+  }
+  a.back-link:hover {
+    text-decoration: underline;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Бронирование места на мероприятие: {{.Event.Name}}</h1>
+    <form method="POST" action="/api/events/{{.Event.ID}}/book">
+      <label for="seat_id">Номер места:</label>
+      <input type="number" id="seat_id" name="seat_id" min="1" required />
+      <button type="submit">Забронировать</button>
+    </form>
+    <a href="/events/{{.Event.ID}}/view" class="back-link">← Назад к событию</a>
+  </div>
+
+  <a href="/profile" style="
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #007bff;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    z-index: 1000;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+">Профиль</a>
+
+</body>
+</html>

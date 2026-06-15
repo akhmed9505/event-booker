@@ -1,0 +1,51 @@
+
+services:
+    # No depends_on here - let the app handle connection retries
+  migrate:
+    image: migrate/migrate:v4.15.2
+    container_name: migration
+    depends_on:
+      - pg-local
+      - app
+    restart: on-failure
+    command: [
+      "-path=/app/migrations", # <---  Путь внутри контейнера
+      "-database=postgres://postgres:1@pg-local:5432/postgres?sslmode=disable",
+      "up"
+    ]
+    volumes:
+      - ./internal/migrations:/app/migrations  # <---  Изменен локальный путь
+    networks:
+      - app-network
+  app:
+    container_name: app
+    image: app
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    env_file:
+      .env
+    restart: always
+  pg-local:
+    container_name: pg-local
+    image: postgres:latest
+    restart: always
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DATABASE}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_DB: ${POSTGRES_DATABASE}
+    env_file:
+      - .env
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge

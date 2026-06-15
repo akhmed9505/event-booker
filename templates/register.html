@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>WarehouseControl — Регистрация</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #f4f6f8;
+    margin: 0; padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  #auth-container {
+    background: white;
+    padding: 40px 50px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    width: 360px;
+    box-sizing: border-box;
+  }
+  h2 {
+    margin: 0 0 25px;
+    color: #34495e;
+    font-weight: 700;
+    text-align: center;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  label {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 8px;
+    font-size: 15px;
+  }
+  input, select {
+    padding: 10px 14px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: 1px solid #bdc3c7;
+    font-size: 16px;
+    outline-offset: 2px;
+    transition: border-color 0.3s ease;
+  }
+  input:focus, select:focus {
+    border-color: #2980b9;
+    box-shadow: 0 0 8px rgba(41,128,185,0.6);
+  }
+  button {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #3498db;
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  button:hover {
+    background: #2980b9;
+    transform: scale(1.05);
+  }
+  button:active {
+    transform: scale(0.95);
+  }
+  .toggle-link {
+    margin-top: 15px;
+    color: #2980b9;
+    cursor: pointer;
+    user-select: none;
+    text-decoration: underline;
+    font-size: 14px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div id="auth-container">
+
+  <h2>Регистрация</h2>
+  <form id="form-register">
+    <label for="reg-username">Имя пользователя:</label>
+    <input type="text" id="reg-username" required />
+    <label for="reg-password">Пароль:</label>
+    <input type="password" id="reg-password" required />
+    <label for="reg-role">Выберите роль:</label>
+    <select id="reg-role" required>
+      <option value="" disabled selected>Выберите роль</option>
+      <option value="viewer">Просмотрщик</option>
+      <option value="manager">Менеджер</option>
+      <option value="admin">Администратор</option>
+    </select>
+    <button type="submit">Зарегистрироваться</button>
+  </form>
+
+  <div class="toggle-link" id="show-login">Уже есть аккаунт? <a href="/login">Войти</a></div>
+
+</div>
+
+<script>
+  document.getElementById('form-register').onsubmit = async (e) => {
+    e.preventDefault();
+    const username = document.getElementById('reg-username').value.trim();
+    const password = document.getElementById('reg-password').value;
+    const role = document.getElementById('reg-role').value;
+    if (!username || !password || !role) {
+      alert('Пожалуйста, заполните все поля для регистрации');
+      return;
+    }
+    try {
+      const res = await fetch('/user/register', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({nickname: username, password, roles: [role]})
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        alert('Ошибка: ' + (data.error || data.message));
+        return;
+      }
+      alert('Регистрация прошла успешно');
+      window.location.href = '/login';
+    } catch(err) {
+      alert('Ошибка соединения с сервером');
+    }
+  };
+</script>
+
+</body>
+</html>
